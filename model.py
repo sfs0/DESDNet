@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-# import torch.nn as nn
+
 from resnext.resnext101_regular import ResNeXt101
 
 
@@ -51,7 +51,6 @@ class AttentionModule(nn.Module):
         return block2
 
 
-### 新加的
 class Edge(nn.Module):
     def __init__(self):
         super(Edge, self).__init__()
@@ -69,9 +68,6 @@ class Edge(nn.Module):
         x = self.sigmoid(x)
 
         return x
-
-
-###
 
 
 class DESDNet(nn.Module):
@@ -157,9 +153,7 @@ class DESDNet(nn.Module):
         self.attention1_hl = AttentionModule()
         self.attention0_hl = AttentionModule()
 
-        ###
         self.Edge = Edge()
-        ###
 
         self.conv1x1_ReLU_down4 = nn.Sequential(
             nn.Conv2d(32, 32, 1, bias=False),
@@ -211,19 +205,34 @@ class DESDNet(nn.Module):
         down1 = self.down1(layer1)
         down0 = self.down0(layer0)
 
-        ###
         down4_resized = F.interpolate(
             down4, size=down0.shape[2:], mode="bilinear", align_corners=False
         )
         edge = down4_resized + down0
         edge = self.Edge(edge)
-        ###
 
         #############################################################################################################
         down4_dst1 = self.dst1(down4)
         down4_dst2 = self.dst2(down4)
         down4_shad = down4
 
+        down3_dst1 = self.dst1(down3)
+        down3_dst2 = self.dst2(down3)
+        down3_shad = down3
+
+        down2_dst1 = self.dst1(down2)
+        down2_dst2 = self.dst2(down2)
+        down2_shad = down2
+
+        down1_dst1 = self.dst1(down1)
+        down1_dst2 = self.dst2(down1)
+        down1_shad = down1
+
+        down0_dst1 = self.dst1(down0)
+        down0_dst2 = self.dst2(down0)
+        down0_shad = down0
+
+        ################
         down4_shad = (
             1 + self.attention4_hl(torch.cat((down4_shad, down4_dst2), 1))
         ) * down4_shad
@@ -231,11 +240,62 @@ class DESDNet(nn.Module):
             -self.refine4_hl(torch.cat((down4_shad, down4_dst1), 1)) + down4_shad, True
         )
 
-        ###
         edge = F.interpolate(
             edge, size=down4_shad.shape[2:], mode="bilinear", align_corners=False
         )
         down4_shad = down4_shad + edge
+
+        ######
+        down3_shad = (
+            1 + self.attention3_hl(torch.cat((down3_shad, down3_dst2), 1))
+        ) * down3_shad
+        down3_shad = F.relu(
+            -self.refine3_hl(torch.cat((down3_shad, down3_dst1), 1)) + down3_shad, True
+        )
+
+        edge = F.interpolate(
+            edge, size=down3_shad.shape[2:], mode="bilinear", align_corners=False
+        )
+        down3_shad = down3_shad + edge
+
+        ######
+        down2_shad = (
+            1 + self.attention2_hl(torch.cat((down2_shad, down2_dst2), 1))
+        ) * down2_shad
+        down2_shad = F.relu(
+            -self.refine2_hl(torch.cat((down2_shad, down2_dst1), 1)) + down2_shad, True
+        )
+
+        edge = F.interpolate(
+            edge, size=down2_shad.shape[2:], mode="bilinear", align_corners=False
+        )
+        down2_shad = down2_shad + edge
+
+        ######
+        down1_shad = (
+            1 + self.attention1_hl(torch.cat((down1_shad, down1_dst2), 1))
+        ) * down1_shad
+        down1_shad = F.relu(
+            -self.refine1_hl(torch.cat((down1_shad, down1_dst1), 1)) + down1_shad, True
+        )
+
+        edge = F.interpolate(
+            edge, size=down1_shad.shape[2:], mode="bilinear", align_corners=False
+        )
+        down1_shad = down1_shad + edge
+
+        ######
+        down0_shad = (
+            1 + self.attention0_hl(torch.cat((down0_shad, down0_dst2), 1))
+        ) * down0_shad
+        down0_shad = F.relu(
+            -self.refine0_hl(torch.cat((down0_shad, down0_dst1), 1)) + down0_shad, True
+        )
+
+        edge = F.interpolate(
+            edge, size=down0_shad.shape[2:], mode="bilinear", align_corners=False
+        )
+        down0_shad = down0_shad + edge
         ###
 
         down4_dst1_3 = F.upsample(down4_dst1, size=down3.size()[2:], mode="bilinear")
@@ -261,23 +321,6 @@ class DESDNet(nn.Module):
         Edge_down4_dst2 = F.upsample(up_down4_dst2, size=x.size()[2:], mode="bilinear")
         Edge_down4_shad = F.upsample(up_down4_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
-        down3_dst1 = self.dst1(down3)
-        down3_dst2 = self.dst2(down3)
-        down3_shad = down3
-
-        down3_shad = (
-            1 + self.attention3_hl(torch.cat((down3_shad, down3_dst2), 1))
-        ) * down3_shad
-        down3_shad = F.relu(
-            -self.refine3_hl(torch.cat((down3_shad, down3_dst1), 1)) + down3_shad, True
-        )
-
-        ###
-        edge = F.interpolate(
-            edge, size=down3_shad.shape[2:], mode="bilinear", align_corners=False
-        )
-        down3_shad = down3_shad + edge
-        ###
 
         down3_dst1_2 = F.upsample(down3_dst1, size=down2.size()[2:], mode="bilinear")
         down3_dst1_1 = F.upsample(down3_dst1, size=down1.size()[2:], mode="bilinear")
@@ -307,24 +350,6 @@ class DESDNet(nn.Module):
         Edge_down3_shad = F.upsample(up_down3_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
 
-        down2_dst1 = self.dst1(down2)
-        down2_dst2 = self.dst2(down2)
-        down2_shad = down2
-
-        down2_shad = (
-            1 + self.attention2_hl(torch.cat((down2_shad, down2_dst2), 1))
-        ) * down2_shad
-        down2_shad = F.relu(
-            -self.refine2_hl(torch.cat((down2_shad, down2_dst1), 1)) + down2_shad, True
-        )
-
-        ###
-        edge = F.interpolate(
-            edge, size=down2_shad.shape[2:], mode="bilinear", align_corners=False
-        )
-        down2_shad = down2_shad + edge
-        ###
-
         down2_dst1_1 = F.upsample(down2_dst1, size=down1.size()[2:], mode="bilinear")
         down2_dst1_0 = F.upsample(down2_dst1, size=down0.size()[2:], mode="bilinear")
 
@@ -348,23 +373,6 @@ class DESDNet(nn.Module):
         Edge_down2_dst2 = F.upsample(up_down2_dst2, size=x.size()[2:], mode="bilinear")
         Edge_down2_shad = F.upsample(up_down2_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
-        down1_dst1 = self.dst1(down1)
-        down1_dst2 = self.dst2(down1)
-        down1_shad = down1
-
-        down1_shad = (
-            1 + self.attention1_hl(torch.cat((down1_shad, down1_dst2), 1))
-        ) * down1_shad
-        down1_shad = F.relu(
-            -self.refine1_hl(torch.cat((down1_shad, down1_dst1), 1)) + down1_shad, True
-        )
-
-        ###
-        edge = F.interpolate(
-            edge, size=down1_shad.shape[2:], mode="bilinear", align_corners=False
-        )
-        down1_shad = down1_shad + edge
-        ###
 
         down1_dst1_0 = F.upsample(down1_dst1, size=down0.size()[2:], mode="bilinear")
 
@@ -386,24 +394,6 @@ class DESDNet(nn.Module):
         Edge_down1_dst2 = F.upsample(up_down1_dst2, size=x.size()[2:], mode="bilinear")
         Edge_down1_shad = F.upsample(up_down1_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
-
-        down0_dst1 = self.dst1(down0)
-        down0_dst2 = self.dst2(down0)
-        down0_shad = down0
-
-        down0_shad = (
-            1 + self.attention0_hl(torch.cat((down0_shad, down0_dst2), 1))
-        ) * down0_shad
-        down0_shad = F.relu(
-            -self.refine0_hl(torch.cat((down0_shad, down0_dst1), 1)) + down0_shad, True
-        )
-
-        ###
-        edge = F.interpolate(
-            edge, size=down0_shad.shape[2:], mode="bilinear", align_corners=False
-        )
-        down0_shad = down0_shad + edge
-        ###
 
         up_down0_dst1 = self.conv1x1_ReLU_down0(
             torch.cat(
