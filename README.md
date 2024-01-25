@@ -10,3 +10,7 @@ This is a distraction-aware edge-enhanced shadow detection method for remote sen
 
 ## Test results on the SBU dataset
 ![sbu](https://github.com/sfs0/DESDNet/assets/102003355/a677050a-7c16-4db9-89e6-6305bfb4367b)
+
+
+## Model
+![model](https://github.com/sfs0/DESDNet/assets/102003355/5ab1c362-8725-4099-9179-a1c49a5eaeb0)
