@@ -190,7 +190,7 @@ class DESDNet(nn.Module):
             nn.Conv2d(32, 1, 1, bias=False),
         )
 
-        self.fuse_Edgeict = nn.Sequential(nn.Conv2d(5, 1, 1, bias=False))  # 表示5个通道，1个输出
+        self.fuse_predict = nn.Sequential(nn.Conv2d(5, 1, 1, bias=False))  # 表示5个通道，1个输出
 
     def forward(self, x):
         layer0 = self.layer0(x)
@@ -416,7 +416,7 @@ class DESDNet(nn.Module):
         Edge_down0_shad = F.upsample(up_down0_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
 
-        fuse_Edge_shad = self.fuse_Edgeict(
+        fuse_Edge_shad = self.fuse_predict(
             torch.cat(
                 (
                     Edge_down0_shad,
@@ -428,7 +428,7 @@ class DESDNet(nn.Module):
                 1,
             )
         )
-        fuse_Edge_dst1 = self.fuse_Edgeict(
+        fuse_Edge_dst1 = self.fuse_predict(
             torch.cat(
                 (
                     Edge_down0_dst1,
@@ -440,7 +440,7 @@ class DESDNet(nn.Module):
                 1,
             )
         )
-        fuse_Edge_dst2 = self.fuse_Edgeict(
+        fuse_Edge_dst2 = self.fuse_predict(
             torch.cat(
                 (
                     Edge_down0_dst2,
