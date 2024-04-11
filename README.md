@@ -5,7 +5,8 @@ This is a distraction-aware edge-enhanced shadow detection method for remote sen
 ## Prediction results on remote sensing image datasets
 <img width="1451" alt="shadow" src="https://github.com/sfs0/DESDNet/assets/102003355/8eb427fe-70e5-4d52-90cb-6b5114233a1c">
 
-![Uploading shadow1.png…]()
+
+<img width="1125" alt="shadow1" src="https://github.com/sfs0/DESDNet/assets/102003355/2af422dc-19f5-4dd8-b2ac-577b0be11bdd">
 
 
 ## Test results on the ISTD dataset
