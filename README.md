@@ -3,14 +3,20 @@ This is a distraction-aware edge-enhanced shadow detection method for remote sen
 
 
 ## Prediction results on remote sensing image datasets
-![ans](https://github.com/sfs0/DESDNet/assets/102003355/05010335-c5d4-4496-94a9-14cf289a4aff)
+<img width="1451" alt="shadow" src="https://github.com/sfs0/DESDNet/assets/102003355/8eb427fe-70e5-4d52-90cb-6b5114233a1c">
+
+![Uploading shadow1.png…]()
+
 
 ## Test results on the ISTD dataset
-![istd](https://github.com/sfs0/DESDNet/assets/102003355/db02c617-332d-453d-8120-1dbfc848916d)
+<img width="1107" alt="istd_1" src="https://github.com/sfs0/DESDNet/assets/102003355/a2e91256-27f4-477f-b9b9-6b45700d1250">
+
 
 ## Test results on the SBU dataset
-![sbu](https://github.com/sfs0/DESDNet/assets/102003355/a677050a-7c16-4db9-89e6-6305bfb4367b)
+<img width="1107" alt="sbu_1" src="https://github.com/sfs0/DESDNet/assets/102003355/d51e6cba-0432-4a33-82f0-3481f935916d">
+
 
 
 ## Model
-![model](https://github.com/sfs0/DESDNet/assets/102003355/5ab1c362-8725-4099-9179-a1c49a5eaeb0)
+![model](https://github.com/sfs0/DESDNet/assets/102003355/999957b7-5c5a-4b91-b33d-c5f536b57640)
+
