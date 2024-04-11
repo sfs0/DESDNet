@@ -317,9 +317,9 @@ class DESDNet(nn.Module):
         up_down4_dst2 = self.conv1x1_ReLU_down4(down4_dst2)
         up_down4_shad = self.conv1x1_ReLU_down4(down4_shad)
 
-        Edge_down4_dst1 = F.upsample(up_down4_dst1, size=x.size()[2:], mode="bilinear")
-        Edge_down4_dst2 = F.upsample(up_down4_dst2, size=x.size()[2:], mode="bilinear")
-        Edge_down4_shad = F.upsample(up_down4_shad, size=x.size()[2:], mode="bilinear")
+        pred_down4_dst1 = F.upsample(up_down4_dst1, size=x.size()[2:], mode="bilinear")
+        pred_down4_dst2 = F.upsample(up_down4_dst2, size=x.size()[2:], mode="bilinear")
+        pred_down4_shad = F.upsample(up_down4_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
 
         down3_dst1_2 = F.upsample(down3_dst1, size=down2.size()[2:], mode="bilinear")
@@ -345,9 +345,9 @@ class DESDNet(nn.Module):
             torch.cat((down3_shad, down4_shad_3), 1)
         )
 
-        Edge_down3_dst1 = F.upsample(up_down3_dst1, size=x.size()[2:], mode="bilinear")
-        Edge_down3_dst2 = F.upsample(up_down3_dst2, size=x.size()[2:], mode="bilinear")
-        Edge_down3_shad = F.upsample(up_down3_shad, size=x.size()[2:], mode="bilinear")
+        pred_down3_dst1 = F.upsample(up_down3_dst1, size=x.size()[2:], mode="bilinear")
+        pred_down3_dst2 = F.upsample(up_down3_dst2, size=x.size()[2:], mode="bilinear")
+        pred_down3_shad = F.upsample(up_down3_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
 
         down2_dst1_1 = F.upsample(down2_dst1, size=down1.size()[2:], mode="bilinear")
@@ -369,9 +369,9 @@ class DESDNet(nn.Module):
             torch.cat((down2_shad, down3_shad_2, down4_shad_2), 1)
         )
 
-        Edge_down2_dst1 = F.upsample(up_down2_dst1, size=x.size()[2:], mode="bilinear")
-        Edge_down2_dst2 = F.upsample(up_down2_dst2, size=x.size()[2:], mode="bilinear")
-        Edge_down2_shad = F.upsample(up_down2_shad, size=x.size()[2:], mode="bilinear")
+        pred_down2_dst1 = F.upsample(up_down2_dst1, size=x.size()[2:], mode="bilinear")
+        pred_down2_dst2 = F.upsample(up_down2_dst2, size=x.size()[2:], mode="bilinear")
+        pred_down2_shad = F.upsample(up_down2_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
 
         down1_dst1_0 = F.upsample(down1_dst1, size=down0.size()[2:], mode="bilinear")
@@ -390,9 +390,9 @@ class DESDNet(nn.Module):
             torch.cat((down1_shad, down2_shad_1, down3_shad_1, down4_shad_1), 1)
         )
 
-        Edge_down1_dst1 = F.upsample(up_down1_dst1, size=x.size()[2:], mode="bilinear")
-        Edge_down1_dst2 = F.upsample(up_down1_dst2, size=x.size()[2:], mode="bilinear")
-        Edge_down1_shad = F.upsample(up_down1_shad, size=x.size()[2:], mode="bilinear")
+        pred_down1_dst1 = F.upsample(up_down1_dst1, size=x.size()[2:], mode="bilinear")
+        pred_down1_dst2 = F.upsample(up_down1_dst2, size=x.size()[2:], mode="bilinear")
+        pred_down1_shad = F.upsample(up_down1_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
 
         up_down0_dst1 = self.conv1x1_ReLU_down0(
@@ -411,43 +411,43 @@ class DESDNet(nn.Module):
             )
         )
 
-        Edge_down0_dst1 = F.upsample(up_down0_dst1, size=x.size()[2:], mode="bilinear")
-        Edge_down0_dst2 = F.upsample(up_down0_dst2, size=x.size()[2:], mode="bilinear")
-        Edge_down0_shad = F.upsample(up_down0_shad, size=x.size()[2:], mode="bilinear")
+        pred_down0_dst1 = F.upsample(up_down0_dst1, size=x.size()[2:], mode="bilinear")
+        pred_down0_dst2 = F.upsample(up_down0_dst2, size=x.size()[2:], mode="bilinear")
+        pred_down0_shad = F.upsample(up_down0_shad, size=x.size()[2:], mode="bilinear")
         #############################################################################################################
 
-        fuse_Edge_shad = self.fuse_predict(
+        fuse_pred_shad = self.fuse_predict(
             torch.cat(
                 (
-                    Edge_down0_shad,
-                    Edge_down1_shad,
-                    Edge_down2_shad,
-                    Edge_down3_shad,
-                    Edge_down4_shad,
+                    pred_down0_shad,
+                    pred_down1_shad,
+                    pred_down2_shad,
+                    pred_down3_shad,
+                    pred_down4_shad,
                 ),
                 1,
             )
         )
-        fuse_Edge_dst1 = self.fuse_predict(
+        fuse_pred_dst1 = self.fuse_predict(
             torch.cat(
                 (
-                    Edge_down0_dst1,
-                    Edge_down1_dst1,
-                    Edge_down2_dst1,
-                    Edge_down3_dst1,
-                    Edge_down4_dst1,
+                    pred_down0_dst1,
+                    pred_down1_dst1,
+                    pred_down2_dst1,
+                    pred_down3_dst1,
+                    pred_down4_dst1,
                 ),
                 1,
             )
         )
-        fuse_Edge_dst2 = self.fuse_predict(
+        fuse_pred_dst2 = self.fuse_predict(
             torch.cat(
                 (
-                    Edge_down0_dst2,
-                    Edge_down1_dst2,
-                    Edge_down2_dst2,
-                    Edge_down3_dst2,
-                    Edge_down4_dst2,
+                    pred_down0_dst2,
+                    pred_down1_dst2,
+                    pred_down2_dst2,
+                    pred_down3_dst2,
+                    pred_down4_dst2,
                 ),
                 1,
             )
@@ -455,24 +455,24 @@ class DESDNet(nn.Module):
         #############################################################################################################
         if self.training:
             return (
-                fuse_Edge_shad,
-                Edge_down1_shad,
-                Edge_down2_shad,
-                Edge_down3_shad,
-                Edge_down4_shad,
-                fuse_Edge_dst1,
-                Edge_down1_dst1,
-                Edge_down2_dst1,
-                Edge_down3_dst1,
-                Edge_down4_dst1,
-                fuse_Edge_dst2,
-                Edge_down1_dst2,
-                Edge_down2_dst2,
-                Edge_down3_dst2,
-                Edge_down4_dst2,
-                Edge_down0_dst1,
-                Edge_down0_dst2,
-                Edge_down0_shad,
+                fuse_pred_shad,
+                pred_down1_shad,
+                pred_down2_shad,
+                pred_down3_shad,
+                pred_down4_shad,
+                fuse_pred_dst1,
+                pred_down1_dst1,
+                pred_down2_dst1,
+                pred_down3_dst1,
+                pred_down4_dst1,
+                fuse_pred_dst2,
+                pred_down1_dst2,
+                pred_down2_dst2,
+                pred_down3_dst2,
+                pred_down4_dst2,
+                pred_down0_dst1,
+                pred_down0_dst2,
+                pred_down0_shad,
             )
 
-        return F.sigmoid(fuse_Edge_shad)
+        return F.sigmoid(fuse_pred_shad)
