@@ -19,5 +19,6 @@ This is a distraction-aware edge-enhanced shadow detection method for remote sen
 
 
 ## Model
-![model](https://github.com/sfs0/DESDNet/assets/102003355/999957b7-5c5a-4b91-b33d-c5f536b57640)
+<img width="1659" alt="DESD" src="https://github.com/sfs0/DESDNet/assets/102003355/5d6c656f-cc53-4742-9e89-db2cb2f7b7a7">
+
 
